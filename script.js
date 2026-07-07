@@ -20,6 +20,7 @@ const predictionResults = [
 // ===============================
 // Variables
 // ===============================
+const API_URL = "https://script.google.com/macros/s/AKfycbyXKkIKE1A1P-XfyRDOXzeAzYwrqvh2e8dXEGtU-vxX_GWO30enNZGcd8XNYOWnWWqi/exec";
 
 const cards = document.querySelectorAll(".team-card");
 
@@ -28,6 +29,7 @@ const submitBtn = document.getElementById("submitPrediction");
 const resultsContainer = document.getElementById("resultsContainer");
 
 const winnerReveal = document.getElementById("winnerReveal");
+
 
 let selectedTeam = null;
 
@@ -59,48 +61,73 @@ submitBtn.disabled = true;
 // Submit Prediction
 // ===============================
 
-submitBtn.addEventListener("click", () => {
+submitBtn.addEventListener("click", async () => {
 
     const employee = document.getElementById("employeeName").value.trim();
-
     const division = document.getElementById("department").value;
 
     if(employee === ""){
-
         alert("Please enter your name.");
         return;
-
     }
 
     if(division === ""){
-
         alert("Please select your division.");
         return;
-
     }
 
     if(selectedTeam === null){
-
         alert("Please choose your champion.");
         return;
+    }
+
+    // Disable button while submitting
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Submitting...";
+
+    try {
+
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                employee: employee,
+                division: division,
+                team: selectedTeam
+            })
+        });
+
+        const result = await response.json();
+
+        if(result.success){
+
+            document.getElementById("modalName").textContent = employee;
+            document.getElementById("modalDepartment").textContent = division;
+            document.getElementById("modalTeam").textContent = "🏆 " + selectedTeam;
+            document.getElementById("modalTime").textContent = new Date().toLocaleString();
+
+            document.getElementById("successModal").classList.add("show");
+
+        } else {
+
+            alert("Submission failed.");
+
+        }
+
+    } catch(error){
+
+        console.error(error);
+
+        alert("Unable to connect to Google Sheets.");
 
     }
 
-    // Open Success Modal
-
-    document.getElementById("modalName").textContent = employee;
-
-    document.getElementById("modalDepartment").textContent = division;
-
-    document.getElementById("modalTeam").textContent = "🏆 " + selectedTeam;
-
-    document.getElementById("modalTime").textContent =
-        new Date().toLocaleString();
-
-    document.getElementById("successModal").classList.add("show");
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Submit My Prediction";
 
 });
-
 // ===============================
 // Load Demo Results
 // ===============================
