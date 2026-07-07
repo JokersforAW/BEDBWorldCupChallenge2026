@@ -1,1 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIFA World Cup Prediction Challenge</title>
+<meta name="description" content="Predict the 2026 FIFA World Cup Champion — an internal office prediction game.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
 
+<!-- ============ LOADING SCREEN ============ -->
+<div id="loading-screen" aria-hidden="true">
+  <div class="loading-ball">⚽</div>
+  <div class="loading-text">LOADING MATCHDAY<span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+</div>
+
+<!-- ============ AMBIENT BACKGROUND ============ -->
+<div class="field-lines" aria-hidden="true"></div>
+<div class="stadium-lights" aria-hidden="true">
+  <span></span><span></span><span></span><span></span>
+</div>
+<div class="floating-balls" aria-hidden="true" id="floating-balls"></div>
+
+<!-- ============ TOP BAR ============ -->
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">🏆 <span>WORLDCUP<em>PREDICT</em></span></div>
+    <button id="sound-toggle" class="sound-toggle" aria-pressed="false" title="Toggle sound effects">
+      <span class="icon-on">🔊</span><span class="icon-off">🔇</span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="hero">
+  <div class="hero-bg-glow" aria-hidden="true"></div>
+  <div class="hero-content">
+    <p class="eyebrow">INTERNAL OFFICE MATCHDAY · 2026</p>
+    <h1 class="hero-title">
+      <span class="line">FIFA WORLD CUP</span>
+      <span class="line accent">PREDICTION CHALLENGE</span>
+    </h1>
+    <p class="hero-subtitle">Predict the 2026 FIFA World Cup Champion and see if your football knowledge beats the rest of the office.</p>
+    <button class="btn btn-primary btn-lg" id="start-btn">
+      <span>Start Prediction</span>
+      <span class="btn-glow" aria-hidden="true"></span>
+    </button>
+    <div class="hero-trophy" aria-hidden="true">🏆</div>
+  </div>
+  <div class="scroll-cue" aria-hidden="true">
+    <span></span>
+  </div>
+</section>
+
+<!-- ============ COUNTDOWN (SCOREBOARD) ============ -->
+<section class="section countdown-section" id="countdown">
+  <p class="section-eyebrow">KICKOFF CLOCK</p>
+  <h2 class="section-title">Prediction Closes In</h2>
+  <div class="scoreboard" id="scoreboard" role="timer" aria-live="off">
+    <div class="scoreboard-unit">
+      <div class="flip-digits" id="days-digits"></div>
+      <span class="unit-label">DAYS</span>
+    </div>
+    <div class="scoreboard-colon">:</div>
+    <div class="scoreboard-unit">
+      <div class="flip-digits" id="hours-digits"></div>
+      <span class="unit-label">HOURS</span>
+    </div>
+    <div class="scoreboard-colon">:</div>
+    <div class="scoreboard-unit">
+      <div class="flip-digits" id="minutes-digits"></div>
+      <span class="unit-label">MINUTES</span>
+    </div>
+    <div class="scoreboard-colon">:</div>
+    <div class="scoreboard-unit">
+      <div class="flip-digits" id="seconds-digits"></div>
+      <span class="unit-label">SECONDS</span>
+    </div>
+  </div>
+  <p class="countdown-closed-msg" id="countdown-closed-msg" hidden>⏱ Predictions are now closed. Good luck to everyone who entered!</p>
+</section>
+
+<!-- ============ HOW TO PLAY ============ -->
+<section class="section" id="how-to-play">
+  <p class="section-eyebrow">THE RULES OF THE PITCH</p>
+  <h2 class="section-title">How To Play</h2>
+  <div class="how-cards">
+    <div class="how-card">
+      <div class="how-icon">⚽</div>
+      <div class="how-num">01</div>
+      <h3>View Quarter Finalists</h3>
+      <p>Scout the eight nations who made it to this stage of the tournament.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-icon">🏆</div>
+      <div class="how-num">02</div>
+      <h3>Choose Your Champion</h3>
+      <p>Pick the one team you believe will lift the trophy. Choose wisely — you can change your mind before you submit.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-icon">🎉</div>
+      <div class="how-num">03</div>
+      <h3>Wait For The Champion</h3>
+      <p>Sit back, watch the tournament unfold, and see if your pick takes the crown.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUARTER FINALISTS ============ -->
+<section class="section" id="quarter-finalists">
+  <p class="section-eyebrow">THE LAST EIGHT</p>
+  <h2 class="section-title">Quarter Finalists</h2>
+  <div class="team-grid" id="qf-grid"></div>
+</section>
+
+<!-- ============ CHOOSE YOUR WINNER ============ -->
+<section class="section" id="choose-winner">
+  <p class="section-eyebrow">MAKE YOUR CALL</p>
+  <h2 class="section-title">Choose Your Winner</h2>
+  <p class="section-sub">Tap a team to select your champion. Only one pick allowed — tap another to change it.</p>
+  <div class="team-grid" id="pick-grid"></div>
+</section>
+
+<!-- ============ LIVE POPULAR PICKS ============ -->
+<section class="section" id="popular-picks">
+  <p class="section-eyebrow">OFFICE PULSE · DEMO DATA</p>
+  <h2 class="section-title">Live Popular Picks</h2>
+  <div class="bars-wrap" id="bars-wrap"></div>
+</section>
+
+<!-- ============ LEADERBOARD ============ -->
+<section class="section" id="leaderboard">
+  <p class="section-eyebrow">TOP PREDICTED TEAMS</p>
+  <h2 class="section-title">Leaderboard</h2>
+  <div class="podium" id="podium"></div>
+  <div class="leaderboard-list" id="leaderboard-list"></div>
+</section>
+
+</main>
+
+<!-- ============ BET SLIP (STICKY PANEL) ============ -->
+<aside class="bet-slip" id="bet-slip" aria-live="polite">
+  <div class="bet-slip-header">
+    <span>🎟️ Your Slip</span>
+    <button class="bet-slip-toggle" id="bet-slip-toggle" aria-label="Toggle slip">▾</button>
+  </div>
+  <div class="bet-slip-body" id="bet-slip-body">
+    <div class="bet-slip-empty" id="bet-slip-empty">
+      <p>No team selected yet.</p>
+      <p class="muted">Choose your champion below.</p>
+    </div>
+    <div class="bet-slip-filled" id="bet-slip-filled" hidden>
+      <div class="bet-slip-team">
+        <span class="bet-slip-flag" id="slip-flag">🏴</span>
+        <div>
+          <p class="bet-slip-label">Selected Team</p>
+          <p class="bet-slip-name" id="slip-name">—</p>
+        </div>
+      </div>
+      <div class="bet-slip-row">
+        <span>Prediction Time</span>
+        <span id="slip-time">—</span>
+      </div>
+      <div class="bet-slip-row">
+        <span>Status</span>
+        <span class="status-pill" id="slip-status">Not submitted</span>
+      </div>
+      <button class="btn btn-gold btn-block" id="place-prediction-btn">
+        <span>Place My Prediction</span>
+        <span class="btn-glow" aria-hidden="true"></span>
+      </button>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ CONFIRMATION MODAL ============ -->
+<div class="modal-overlay" id="confirmation-modal" hidden>
+  <div class="confirmation-card" id="confirmation-card">
+    <div class="confetti-canvas-wrap" aria-hidden="true">
+      <canvas id="confetti-canvas"></canvas>
+    </div>
+    <div class="confirm-ball-spin" aria-hidden="true">⚽</div>
+    <h2>🎉 Prediction Submitted!</h2>
+    <p class="confirm-thanks">Thank you for participating.</p>
+    <div class="confirm-details">
+      <div class="confirm-row">
+        <span>Your Prediction</span>
+        <span class="confirm-pick" id="confirm-pick">—</span>
+      </div>
+      <div class="confirm-row">
+        <span>Submission Time</span>
+        <span id="confirm-time">—</span>
+      </div>
+    </div>
+    <p class="confirm-luck">Good luck! 🍀</p>
+    <div class="confirm-actions">
+      <button class="btn btn-outline" id="print-btn">Print Confirmation</button>
+      <button class="btn btn-primary" id="close-confirm-btn">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <p class="footer-trophy">🏆</p>
+  <p class="footer-line">Good luck! May the best football fan win.</p>
+  <p class="footer-sub">Designed for internal staff engagement · Not affiliated with FIFA</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
