@@ -68,7 +68,6 @@ submitBtn.addEventListener("click", () => {
     if(employee === ""){
 
         alert("Please enter your name.");
-
         return;
 
     }
@@ -76,7 +75,6 @@ submitBtn.addEventListener("click", () => {
     if(division === ""){
 
         alert("Please select your division.");
-
         return;
 
     }
@@ -84,24 +82,22 @@ submitBtn.addEventListener("click", () => {
     if(selectedTeam === null){
 
         alert("Please choose your champion.");
-
         return;
 
     }
 
-    alert(
+    // Open Success Modal
 
-`🏆 Prediction Submitted!
+    document.getElementById("modalName").textContent = employee;
 
-Employee : ${employee}
+    document.getElementById("modalDepartment").textContent = division;
 
-Division : ${division}
+    document.getElementById("modalTeam").textContent = "🏆 " + selectedTeam;
 
-Champion : ${selectedTeam}
+    document.getElementById("modalTime").textContent =
+        new Date().toLocaleString();
 
-Good Luck!`
-
-);
+    document.getElementById("successModal").classList.add("show");
 
 });
 
@@ -202,3 +198,17 @@ if(worldCupFinished){
 // Admin Dashboard
 
 console.log("BEDB World Cup Challenge Loaded Successfully.");
+
+// =====================================
+// Close Success Modal
+// =====================================
+
+document
+.getElementById("closeModal")
+.addEventListener("click", () => {
+
+    document
+    .getElementById("successModal")
+    .classList.remove("show");
+
+});
