@@ -2,9 +2,15 @@
    BEDB WORLD CUP CHALLENGE 2026
 ========================================================== */
 
-// ===============================
-// Demo Prediction Results
-// ===============================
+// ==========================================================
+// GOOGLE APPS SCRIPT WEB APP
+// ==========================================================
+
+const API_URL = "https://script.google.com/macros/s/AKfycbwMo7EqhGUdNgfD3pHhBBOZChUYlm3943TL0ir3xPCwd0IZ2HPb0MCRQEY6df_OXJ8/exec";
+
+// ==========================================================
+// DEMO RESULTS (Temporary)
+// ==========================================================
 
 const predictionResults = [
     { team: "Spain", votes: 18 },
@@ -17,25 +23,20 @@ const predictionResults = [
     { team: "Switzerland", votes: 2 }
 ];
 
-// ===============================
-// Variables
-// ===============================
-const API_URL = "https://script.google.com/macros/s/AKfycbyXKkIKE1A1P-XfyRDOXzeAzYwrqvh2e8dXEGtU-vxX_GWO30enNZGcd8XNYOWnWWqi/exec";
+// ==========================================================
+// VARIABLES
+// ==========================================================
 
 const cards = document.querySelectorAll(".team-card");
-
 const submitBtn = document.getElementById("submitPrediction");
-
 const resultsContainer = document.getElementById("resultsContainer");
-
 const winnerReveal = document.getElementById("winnerReveal");
-
 
 let selectedTeam = null;
 
-// ===============================
-// Team Selection
-// ===============================
+// ==========================================================
+// TEAM SELECTION
+// ==========================================================
 
 cards.forEach(card => {
 
@@ -53,50 +54,55 @@ cards.forEach(card => {
 
 });
 
-// Disable button initially
-
 submitBtn.disabled = true;
 
-// ===============================
-// Submit Prediction
-// ===============================
+// ==========================================================
+// SUBMIT TO GOOGLE SHEETS
+// ==========================================================
 
 submitBtn.addEventListener("click", async () => {
 
     const employee = document.getElementById("employeeName").value.trim();
     const division = document.getElementById("department").value;
 
-    if(employee === ""){
+    if (!employee) {
         alert("Please enter your name.");
         return;
     }
 
-    if(division === ""){
+    if (!division) {
         alert("Please select your division.");
         return;
     }
 
-    if(selectedTeam === null){
+    if (!selectedTeam) {
         alert("Please choose your champion.");
         return;
     }
 
-    // Disable button while submitting
     submitBtn.disabled = true;
     submitBtn.textContent = "Submitting...";
 
     try {
 
         const response = await fetch(API_URL, {
+
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json"
             },
+
             body: JSON.stringify({
+
                 employee: employee,
+
                 division: division,
+
                 team: selectedTeam
+
             })
+
         });
 
         const result = await response.json();
@@ -110,7 +116,14 @@ submitBtn.addEventListener("click", async () => {
 
             document.getElementById("successModal").classList.add("show");
 
-        } else {
+            document.getElementById("employeeName").value = "";
+            document.getElementById("department").selectedIndex = 0;
+
+            cards.forEach(c => c.classList.remove("selected"));
+
+            selectedTeam = null;
+
+        }else{
 
             alert("Submission failed.");
 
@@ -124,23 +137,24 @@ submitBtn.addEventListener("click", async () => {
 
     }
 
-    submitBtn.disabled = false;
+    submitBtn.disabled = true;
     submitBtn.textContent = "Submit My Prediction";
 
 });
-// ===============================
-// Load Demo Results
-// ===============================
+
+// ==========================================================
+// LOAD DEMO RESULTS
+// ==========================================================
 
 function loadResults(){
 
-    const highestVote = Math.max(...predictionResults.map(x => x.votes));
+    const highestVote = Math.max(...predictionResults.map(x=>x.votes));
 
     resultsContainer.innerHTML = "";
 
     predictionResults.forEach(item=>{
 
-        const percent = (item.votes/highestVote)*100;
+        const percent = item.votes/highestVote*100;
 
         resultsContainer.innerHTML += `
 
@@ -174,11 +188,9 @@ function loadResults(){
 
 loadResults();
 
-// ===============================
-// Winner Reveal
-// ===============================
-
-// Leave empty until World Cup ends.
+// ==========================================================
+// WINNER REVEAL
+// ==========================================================
 
 const worldCupFinished = false;
 
@@ -202,40 +214,20 @@ if(worldCupFinished){
 
 }
 
-// ===============================
-// Future Integration
-// ===============================
-
-// Version 2
-//
-// Google Sheets
-//
-// Microsoft Lists
-//
-// SharePoint
-//
-// Power Automate
-//
-// Power Apps
-//
-// SQL Database
-//
-// Export CSV
-//
-// Admin Dashboard
-
-console.log("BEDB World Cup Challenge Loaded Successfully.");
-
-// =====================================
-// Close Success Modal
-// =====================================
+// ==========================================================
+// CLOSE MODAL
+// ==========================================================
 
 document
 .getElementById("closeModal")
-.addEventListener("click", () => {
+.addEventListener("click",()=>{
 
     document
     .getElementById("successModal")
     .classList.remove("show");
 
 });
+
+// ==========================================================
+
+console.log("BEDB World Cup Challenge Loaded Successfully.");
